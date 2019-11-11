@@ -14,20 +14,20 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import android.app.role.RoleManager
 import android.util.Log
+import org.w3c.dom.Text
 
 
 class MainActivity : AppCompatActivity() {
 
     private val PERMISSION_REQUEST_READ_PHONE_STATE = 1
-    private val REQUEST_ID = 1
+    private var phoneReceiver: PhoneReceiver? = null
+
+    var getNumber: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val getNumber: TextView = findViewById(R.id.number)
-        getNumber.setOnClickListener {
-//            requestRole()
-        }
+        getNumber = findViewById(R.id.number)
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED ||
@@ -39,20 +39,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun requestRole() {
-        val roleManager: RoleManager = getSystemService(Context.ROLE_SERVICE)
-        val intent = roleManager.createRequestRoleIntent("android.app.role.CALL_SCREENING")
-        startActivityForResult(intent, REQUEST_ID)
+    //Register BroadcastReceiver
+    override fun onResume() {
+        super.onResume()
+        if(phoneReceiver == null){
+            phoneReceiver = PhoneReceiver()
+            val intentFilter = IntentFilter(IncomingCallReceiver.ACTION)
+            registerReceiver(phoneReceiver, intentFilter)
+
+        }
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_ID) {
-            if (resultCode == android.app.Activity.RESULT_OK) {
-                // Your app is now the call screening app
-            } else {
-                // Your app is not the call screening app
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        if(phoneReceiver!= null)
+            unregisterReceiver(phoneReceiver)
+    }
+
+    fun updateUI(phoneNumber: String?){
+        getNumber?.text = phoneNumber
+    }
+
+    class PhoneReceiver: BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val activity = context as MainActivity?
+            activity?.updateUI(intent?.getStringExtra(IncomingCallReceiver.PHONE_NUMBER))
         }
+
     }
 }

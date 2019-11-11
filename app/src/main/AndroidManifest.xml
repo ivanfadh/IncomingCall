@@ -4,8 +4,6 @@
 
     <uses-permission android:name="android.permission.READ_CALL_LOG"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS"/>
 
     <application
         android:allowBackup="true"
@@ -21,22 +19,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--        <receiver  android:name=".IncomingCallReceiver" android:enabled="true" android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.PHONE_STATE" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
+        <receiver  android:name=".IncomingCallReceiver" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
 <!--        <receiver  android:name=".MainActivity" android:enabled="true" android:exported="true">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.TEST" />-->
 <!--            </intent-filter>-->
 <!--        </receiver>-->
-        <service android:name=".CallServiceImpl"
-            android:permission="android.permission.BIND_SCREENING_SERVICE">
-            <intent-filter>
-                <action android:name="android.telecom.CallScreeningService"/>
-            </intent-filter>
-        </service>
 
     </application>
 
