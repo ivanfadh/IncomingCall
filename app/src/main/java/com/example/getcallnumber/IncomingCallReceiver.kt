@@ -4,7 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
-import android.util.Log
+
+
 
 class IncomingCallReceiver : BroadcastReceiver() {
 
@@ -16,14 +17,22 @@ class IncomingCallReceiver : BroadcastReceiver() {
     var number: String? = null
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        number = intent?.extras?.getString(TelephonyManager.EXTRA_INCOMING_NUMBER)
+        val state = intent?.getStringExtra(TelephonyManager.EXTRA_STATE)
+
+        try {
+            if (state.equals(TelephonyManager.EXTRA_STATE_IDLE, ignoreCase = true)) {
+                number = intent?.extras?.getString(TelephonyManager.EXTRA_INCOMING_NUMBER)
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+
         val intent = Intent(ACTION)
         intent.putExtra(PHONE_NUMBER, number.toString())
         context?.sendBroadcast(intent)
 
     }
 
-  /*  interface ReceiverInterface {
-        fun onReceive(phoneNumber: String)
-    }*/
 }

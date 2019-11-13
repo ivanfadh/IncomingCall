@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     var getNumber: TextView? = null
-    var phoneNumber: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,7 +113,6 @@ class MainActivity : AppCompatActivity() {
             getNumber?.text = phoneNumber
         }
     }
-
     class PhoneReceiver: BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
             val activity = context as MainActivity?
